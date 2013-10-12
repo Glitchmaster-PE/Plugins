@@ -170,8 +170,8 @@ class KitPro implements Plugin
                     else
                     {
                         $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 1 ID"] . " " . $this -> WarroirKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 1 ID"] . " " . $this -> WarroirKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 1 ID"] . " " . $this -> WarroirKit["Item 1 Amount"]);
+                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 2 ID"] . " " . $this -> WarroirKit["Item 2 Amount"]);
+                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 3 ID"] . " " . $this -> WarroirKit["Item 3 Amount"]);
                         array_push($this -> player, $username);
                         $output = "[KitPro] Your kit has been given!";
                         return $output;
