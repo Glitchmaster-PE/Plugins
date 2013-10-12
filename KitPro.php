@@ -4,7 +4,7 @@
  * __PocketMine Plugin__
  * name=KitPro
  * description=Gives a kit when a command is done
- * version=1.0
+ * version=2.0
  * author=Glitchmaster_PE
  * class=KitPro
  * apiversion=10
@@ -230,13 +230,13 @@ class KitPro implements Plugin
 
     }
 
-   /* public function eventHandler($event, $data){
+   public function eventHandler($event, $data){
         $username = $data->player->username;
-        $getKit = in_array($username, $this -> player);
+        $getKit = array_search($username, $this -> player);
         unset($this->player[$getKit]);
         $output = "[KitPro] You have died and may choose a new kit!";
         return $output;
-    }*/
+    }
 
     public function __destruct()
     {
