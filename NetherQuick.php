@@ -45,7 +45,7 @@ class NetherQuick implements Plugin
         $this -> item = new Config($this -> path . "Item.yml", CONFIG_YAML, array("ItemID" => "247"));
         $this -> item = $this -> api -> plugin -> readYAML($this -> path . "Item.yml");
         $this -> api -> level -> loadLevel("Nether");
-		$this -> netherreactor = array(4, 4, 4, 4, 4, 4, 41, 41, 41, 41, 4, 4, 4, 4); // Template of how the nether reactor should look like
+		$this -> netherreactor = array(4, 4, 4, 4, 4, 4, 41, 41, 41, 41, 4, 4, 4, 4, 4, 4, 4, 4); // Template of how the nether reactor should look like
     }
 
     public function touchHandler($data)
@@ -68,6 +68,10 @@ class NetherQuick implements Plugin
 			$blocks[] = $level->getBlock(new Vector3($x + 1, $y - 1, $z - 1))->getID();
 			$blocks[] = $level->getBlock(new Vector3($x - 1, $y - 1, $z + 1))->getID();
 			$blocks[] = $level->getBlock(new Vector3($x - 1, $y - 1, $z - 1))->getID();
+			$blocks[] = $level->getBlock(new Vector3($x + 1, $y, $z))->getID();
+			$blocks[] = $level->getBlock(new Vector3($x - 1, $y, $z))->getID();
+			$blocks[] = $level->getBlock(new Vector3($x, $y, $z + 1))->getID();
+			$blocks[] = $level->getBlock(new Vector3($x, $y, $z + 1))->getID();
 			$blocks[] = $level->getBlock(new Vector3($x + 1, $y, $z + 1))->getID();
 			$blocks[] = $level->getBlock(new Vector3($x + 1, $y, $z - 1))->getID();
 			$blocks[] = $level->getBlock(new Vector3($x - 1, $y, $z + 1))->getID();
