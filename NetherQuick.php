@@ -4,7 +4,7 @@ __PocketMine Plugin__
 name=NetherQuick
 description=Tap on Nether Reactor to go to the second world loaded or to the default world if already in second world
 version=2.2
-author=Glitchmaster_PE and wiezz
+author=Glitchmaster_PE and wies
 class=NetherQuick
 apiversion=9,10
 */
