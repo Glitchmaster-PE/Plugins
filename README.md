@@ -6,7 +6,7 @@ permission
 ```	
 Hi!
 
-You may enjoy my plugins as you want. Contact me if you want to develope with the or give me any suggestions
+You may enjoy my plugins as you want. Contact me if you want to develope with me or give me any suggestions
 
 ##How to contact me:
 
