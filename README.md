@@ -1,7 +1,8 @@
 #Glitchmaster_PE's Plugins!
 
 ```
-My Plugins are made so you can have fun with them, not so you can copy them. You may not copy my code unless I give you permission
+My Plugins are made so you can have fun with them, not so you can copy them. You may not copy my code unless I give you
+permission
 ```	
 Hi!
 
