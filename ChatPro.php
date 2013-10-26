@@ -4,7 +4,7 @@
  __PocketMine Plugin__
  name=ChatPro
  description=Adds new commands for handling the chat
- version=4.4
+ version=5.0
  author=Glitchmaster_PE
  class=ChatPro
  apiversion=10
@@ -30,10 +30,21 @@ class ChatPro implements Plugin
 
     public function init()
     {
-        $this -> api -> console -> register("stafflist", "Gives a list of this server's staff", array(
+        $this -> api -> console -> register("stafflist", "Gives list of staff", array(
             $this,
-            "StaffListPro"
+            "StaffList"
         ));
+        $this -> api -> ban -> cmdwhitelist("stafflist");
+        $this -> path = $this -> api -> plugin -> configPath($this);
+        $this -> owner = new Config($this -> path . "owner.yml", CONFIG_YAML, array());
+        $this -> admins = new Config($this -> path . "admins.yml", CONFIG_YAML, array());
+        $this -> mods = new Config($this -> path . "mods.yml", CONFIG_YAML, array());
+        $this -> trusted = new Config($this -> path . "trusted.yml", CONFIG_YAML, array());
+        $this -> api -> console -> register("staffadd", "Add a staff member", array(
+            $this,
+            "Staffadd"
+        ));
+        $this -> reload();
         $this -> api -> console -> register("prefix", "Set a users prefix. Usage: /prefix <username> [prefix]", array(
             $this,
             "Prefix"
@@ -48,14 +59,6 @@ class ChatPro implements Plugin
             $this,
             "handler"
         ), 5);
-        $this -> path = $this -> api -> plugin -> configPath($this);
-        $this -> staffmsgs = new Config($this -> path . "staff.yml", CONFIG_YAML, array(
-            "Owner" => "<Insert Here>",
-            "Admins" => "<Insert Here>",
-            "Moderators" => "<Insert Here>",
-            "Trusted" => "<Insert Here>"
-        ));
-        $this -> staffmsgs = $this -> api -> plugin -> readYAML($this -> path . "staff.yml");
         $this -> api -> console -> register("announce", "Gives server announcements", array(
             $this,
             "Announce"
@@ -143,15 +146,75 @@ class ChatPro implements Plugin
         ));
     }
 
-    public function StaffListPro($cmd, $args, $issuer)
+    public function StaffList($cmd, $args, $issuer)
     {
-        if (!$issuer instanceof Player)
-        {
-            $output = "[ChatPro] Owner: " . $this -> staffmsgs["Owner"] . " Admins: " . $this -> staffmsgs["Admins"] . " Moderators: " . $this -> staffmsgs["Moderators"] . " Trusted: " . $this -> staffmsgs["Trusted"];
+        if($issuer instanceof Player){
+        $this -> reload();
+        $username = $issuer -> username;
+        $this -> api -> chat -> sendTo(false, $msg, $username);
+        $msg1 = "[StaffList] Owners: " . implode(", ", $this -> owner);
+        $this -> api -> chat -> sendTo(false, $msg1, $username);
+        $msg2 = "[StaffList] Admins: " . implode(", ", $this -> admins);
+        $this -> api -> chat -> sendTo(false, $msg2, $username);
+        $msg3 = "[StaffList] Moderators: " . implode(", ", $this -> mods);
+        $this -> api -> chat -> sendTo(false, $msg3, $username);
+        $msg4 = "[StaffList] Trusted: " . implode(", ", $this -> trusted);
+        $this -> api -> chat -> sendTo(false, $msg4, $username);
+        }
+        else{
+            $output = "Please run this command in-game until I get time to write this part :p";
             return $output;
         }
-        $username = $issuer -> username;
-        $this -> api -> chat -> sendTo(false, "[ChatPro] Owner: " . $this -> staffmsgs["Owner"] . " Admins: " . $this -> staffmsgs["Admins"] . " Moderators: " . $this -> staffmsgs["Moderators"] . " Trusted: " . $this -> staffmsgs["Trusted"], $username);
+    }
+
+    public function Staffadd($cmd, $args, $issuer)
+    {
+        switch($args[0])
+        {
+            case "owner" :
+            case "o" :
+                $target = $args[1];
+                array_push($this -> owner, $target);
+                $this -> owner = $this -> api -> plugin -> writeYAML($this -> path . "owner.yml", $target);
+                return "Added " . $target . " as an owner";
+                break;
+            case "admins" :
+            case "admin" :
+            case "a" :
+                $target = $args[1];
+                array_push($this -> admins, $target);
+                $this -> admins = $this -> api -> plugin -> writeYAML($this -> path . "admins.yml", $target);
+                return "Added " . $target . " as an admin";
+                break;
+            case "moderators" :
+            case "mod" :
+            case "moderator" :
+            case "mods" :
+            case "m" :
+                $target = $args[1];
+                array_push($this -> mods, $target);
+                $this -> mods = $this -> api -> plugin -> writeYAML($this -> path . "mods.yml", $target);
+                return "Added " . $target . " as a moderator";
+                break;
+            case "trusted" :
+            case "t" :
+                $target = $args[1];
+                array_push($this -> trusted, $target);
+                $this -> trusted = $this -> api -> plugin -> writeYAML($this -> path . "trusted.yml", $target);
+                return "Added " . $target . " as trusted";
+                break;
+            default :
+                $output = "Usage: /staffadd <o|a|m|t> <full username>";
+                return $output;
+        }
+    }
+
+    public function reload()
+    {
+        $this -> owner = $this -> api -> plugin -> readYAML($this -> path . "owner.yml");
+        $this -> admins = $this -> api -> plugin -> readYAML($this -> path . "admins.yml");
+        $this -> mods = $this -> api -> plugin -> readYAML($this -> path . "mods.yml");
+        $this -> trusted = $this -> api -> plugin -> readYAML($this -> path . "trusted.yml");
     }
 
     public function Announce($cmd, $args, $issuer)
