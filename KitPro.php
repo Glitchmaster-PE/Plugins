@@ -4,7 +4,7 @@
  * __PocketMine Plugin__
  * name=KitPro
  * description=Gives a kit when a command is done
- * version=2.0
+ * version=3.2
  * author=Glitchmaster_PE
  * class=KitPro
  * apiversion=10
@@ -30,30 +30,12 @@ class KitPro implements Plugin
     public function init()
     {
 
-        $this -> api -> console -> register("/basic", "Gives the basic kit", array(
+        $this -> api -> console -> register("/kit", "Gives a kit", array(
             $this,
             "commandHandler"
         ));
-        $this -> api -> console -> register("/chef", "Gives the chef kit", array(
-            $this,
-            "commandHandler"
-        ));
-        $this -> api -> console -> register("/warrior", "Gives the warrior kit", array(
-            $this,
-            "commandHandler"
-        ));
-        $this -> api -> ban -> cmdWhitelist("/basic");
-        $this -> api -> ban -> cmdWhitelist("/chef");
-        $this -> api -> ban -> cmdWhitelist("/warrior");
-        $this -> api -> console -> register("/pyro", "Gives the pyro kit", array(
-            $this,
-            "commandHandler"
-        ));
-        $this -> api -> console -> register("/aqua", "Gives the aqua kit", array(
-            $this,
-            "commandHandler"
-        ));
-        $this -> api -> console -> register("/gladiator", "Gives the gladiator kit", array(
+        $this -> api -> ban -> cmdWhitelist("/kit");
+        $this -> api -> console -> register("/donator", "Give a user donator classes", array(
             $this,
             "commandHandler"
         ));
@@ -95,9 +77,9 @@ class KitPro implements Plugin
         ));
         $this -> PyroKit = $this -> api -> plugin -> readYAML($this -> path . "PyroKit[OP].yml");
         $this -> AquaKit = new Config($this -> path . "AquaKit[OP].yml", CONFIG_YAML, array(
-            "Item 1 ID" => "326",
+            "Item 1 ID" => "8",
             "Item 1 Amount" => "5",
-            "Item 2 ID" => "327",
+            "Item 2 ID" => "10",
             "Item 2 Amount" => "5",
             "Item 3 ID" => "267",
             "Item 3 Amount" => "1"
@@ -112,7 +94,12 @@ class KitPro implements Plugin
             "Item 3 Amount" => "1"
         ));
         $this -> GladiatorKit = $this -> api -> plugin -> readYAML($this -> path . "GladiatorKit[OP].yml");
-        $this->api->addHandler("player.death", array($this, "eventHandler"));
+        $this -> api -> addHandler("player.death", array(
+            $this,
+            "eventHandler"
+        ));
+        $this -> donators = new Config($this -> path . "Donators.yml", CONFIG_YAML, array());
+        $this -> donators = $this -> api -> plugin -> readYAML($this -> path . "Donators.yml");
 
     }
 
@@ -129,113 +116,165 @@ class KitPro implements Plugin
         {
             switch($cmd)
             {
-                case "/basic" :
-                    if (!$issuer instanceof Player)
+                case "/kit" :
+                    switch($args[0])
                     {
-                        $output = "Please run this command in-game!";
-                        return $output;
-                    }
-                    else
-                    {
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> BasicKit["Item 1 ID"] . " " . $this -> BasicKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> BasicKit["Item 2 ID"] . " " . $this -> BasicKit["Item 2 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> BasicKit["Item 3 ID"] . " " . $this -> BasicKit["Item 3 Amount"]);
-                        array_push($this -> player, $username);
-                        $output = "[KitPro] Your kit has been given!";
-                        return $output;
+                        case "basic" :
+                            if (!$issuer instanceof Player)
+                            {
+                                $output = "Please run this command in-game!";
+                                return $output;
+                            }
+                            else
+                            {
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> BasicKit["Item 1 ID"] . " " . $this -> BasicKit["Item 1 Amount"]);
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> BasicKit["Item 2 ID"] . " " . $this -> BasicKit["Item 2 Amount"]);
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> BasicKit["Item 3 ID"] . " " . $this -> BasicKit["Item 3 Amount"]);
+                                array_push($this -> player, $username);
+                                $output = "[KitPro] Your kit has been given!";
+                                return $output;
+                            }
+                            break;
+                        case "chef" :
+                            if (!$issuer instanceof Player)
+                            {
+                                $output = FORMAT_RED . "Please run this command in-game!" . FORMAT_RESET;
+                                return $output;
+                            }
+                            else
+                            {
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> ChefKit["Item 1 ID"] . " " . $this -> ChefKit["Item 1 Amount"]);
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> ChefKit["Item 2 ID"] . " " . $this -> ChefKit["Item 2 Amount"]);
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> ChefKit["Item 3 ID"] . " " . $this -> ChefKit["Item 3 Amount"]);
+                                array_push($this -> player, $username);
+                                $output = "[KitPro] Your kit has been given!";
+                                return $output;
+                            }
+                            break;
+                        case "warrior" :
+                            if (!$issuer instanceof Player)
+                            {
+                                $output = "Please run this command in-game!";
+                                return $output;
+                            }
+                            else
+                            {
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 1 ID"] . " " . $this -> WarroirKit["Item 1 Amount"]);
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 2 ID"] . " " . $this -> WarroirKit["Item 2 Amount"]);
+                                $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 3 ID"] . " " . $this -> WarroirKit["Item 3 Amount"]);
+                                array_push($this -> player, $username);
+                                $output = "[KitPro] Your kit has been given!";
+                                return $output;
+                            }
+                            break;
+                        case "pyro" :
+                            $username = $issuer -> username;
+                            $getDonator = in_array($username, $this -> donators);
+                            if ($getDonator === false)
+                            {
+                                $output = "You are not a donator!";
+                                return $output;
+                            }
+                            else
+                            {
+                                if (!$issuer instanceof Player)
+                                {
+                                    $output = "Please run this command in-game!";
+                                    return $output;
+                                }
+                                else
+                                {
+                                    $this -> api -> console -> run("give " . $issuer . " " . $this -> PyroKit["Item 1 ID"] . " " . $this -> PyroKit["Item 1 Amount"]);
+                                    $this -> api -> console -> run("give " . $issuer . " " . $this -> PyroKit["Item 2 ID"] . " " . $this -> PyroKit["Item 2 Amount"]);
+                                    $this -> api -> console -> run("give " . $issuer . " " . $this -> PyroKit["Item 3 ID"] . " " . $this -> PyroKit["Item 3 Amount"]);
+                                    array_push($this -> player, $username);
+                                    $output = "[KitPro] Your kit has been given!";
+                                    return $output;
+                                }
+                            }
+                            break;
+                        /*case "aqua" :
+                         $username = $issuer -> username;
+                         $getDonator = in_array($username, $this -> donators);
+                         if ($getDonator === false)
+                         {
+                         $output = "You are not a donator!";
+                         return $output;
+                         }
+                         else
+                         {
+                         if (!$issuer instanceof Player)
+                         {
+                         $output = "Please run this command in-game!";
+                         return $output;
+                         }
+                         else
+                         {
+                         $this -> api -> console -> run("give " . $issuer . " " .
+                         $this -> AquaKit["Item 1 ID"] . " " . $this ->
+                         AquaKit["Item 1 Amount"]);
+                         $this -> api -> console -> run("give " . $issuer . " " .
+                         $this -> AguaKit["Item 2 ID"] . " " . $this ->
+                         AquaKit["Item 2 Amount"]);
+                         $this -> api -> console -> run("give " . $issuer . " " .
+                         $this -> AquaKit["Item 3 ID"] . " " . $this ->
+                         AquaKit["Item 3 Amount"]);
+                         array_push($this -> player, $username);
+                         $output = "[KitPro] Your kit has been given!";
+                         return $output;
+                         }
+                         }
+                         break;*/
+                        case "gladiator" :
+                            $username = $issuer -> username;
+                            $getDonator = in_array($username, $this -> donators);
+                            if ($getDonator === false)
+                            {
+                                $output = "You are not a donator!";
+                                return $output;
+                            }
+                            else
+                            {
+                                if (!$issuer instanceof Player)
+                                {
+                                    $output = "\"" . FORMAT_GREEN . "Please run this command in-game!" . FROMAT_RESET;
+                                    return $output;
+                                }
+                                else
+                                {
+                                    $this -> api -> console -> run("give " . $issuer . " " . $this -> GladiatorKit["Item 1 ID"] . " " . $this -> GladiatorKit["Item 1 Amount"]);
+                                    $this -> api -> console -> run("give " . $issuer . " " . $this -> GladiatorKit["Item 2 ID"] . " " . $this -> GladiatorKit["Item 2 Amount"]);
+                                    $this -> api -> console -> run("give " . $issuer . " " . $this -> GladiatorKit["Item 3 ID"] . " " . $this -> GladiatorKit["Item 3 Amount"]);
+                                    array_push($this -> player, $username);
+                                    $output = "[KitPro] Your kit has been given!";
+                                    return $output;
+                                }
+                            }
+                            break;
+
+                        default :
+                            $issuer->sendChat("Normal Kits: basic, chef, warrior");
+                            $issuer->sendChat("Doantor Kits: pyro, gladiator");
+                            break;
                     }
                     break;
-                case "/chef" :
-                    if (!$issuer instanceof Player)
-                    {
-                        $output = "Please run this command in-game!";
-                        return $output;
-                    }
-                    else
-                    {
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> ChefKit["Item 1 ID"] . " " . $this -> ChefKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> ChefKit["Item 2 ID"] . " " . $this -> ChefKit["Item 2 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> ChefKit["Item 3 ID"] . " " . $this -> ChefKit["Item 3 Amount"]);
-                        array_push($this -> player, $username);
-                        $output = "[KitPro] Your kit has been given!";
-                        return $output;
-                    }
-                    break;
-                case "/warrior" :
-                    if (!$issuer instanceof Player)
-                    {
-                        $output = "Please run this command in-game!";
-                        return $output;
-                    }
-                    else
-                    {
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 1 ID"] . " " . $this -> WarroirKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 2 ID"] . " " . $this -> WarroirKit["Item 2 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> WarroirKit["Item 3 ID"] . " " . $this -> WarroirKit["Item 3 Amount"]);
-                        array_push($this -> player, $username);
-                        $output = "[KitPro] Your kit has been given!";
-                        return $output;
-                    }
-                    break;
-                case "/pyro" :
-                    if (!$issuer instanceof Player)
-                    {
-                        $output = "Please run this command in-game!";
-                        return $output;
-                    }
-                    else
-                    {
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> PyroKit["Item 1 ID"] . " " . $this -> PyroKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> PyroKit["Item 2 ID"] . " " . $this -> PyroKit["Item 2 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> PyroKit["Item 3 ID"] . " " . $this -> PyroKit["Item 3 Amount"]);
-                        array_push($this -> player, $username);
-                        $output = "[KitPro] Your kit has been given!";
-                        return $output;
-                    }
-                    break;
-                case "/aqua" :
-                    if (!$issuer instanceof Player)
-                    {
-                        $output = "Please run this command in-game!";
-                        return $output;
-                    }
-                    else
-                    {
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> AquaKit["Item 1 ID"] . " " . $this -> AquaKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> AguaKit["Item 2 ID"] . " " . $this -> AquaKit["Item 2 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> AquaKit["Item 3 ID"] . " " . $this -> AquaKit["Item 3 Amount"]);
-                        array_push($this -> player, $username);
-                        $output = "[KitPro] Your kit has been given!";
-                        return $output;
-                    }
-                    break;
-                case "/gladiator" :
-                    if (!$issuer instanceof Player)
-                    {
-                        $output = "Please run this command in-game!";
-                        return $output;
-                    }
-                    else
-                    {
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> GladiatorKit["Item 1 ID"] . " " . $this -> GladiatorKit["Item 1 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> GladiatorKit["Item 2 ID"] . " " . $this -> GladiatorKit["Item 2 Amount"]);
-                        $this -> api -> console -> run("give " . $issuer . " " . $this -> GladiatorKit["Item 3 ID"] . " " . $this -> GladiatorKit["Item 3 Amount"]);
-                        array_push($this -> player, $username);
-                        $output = "[KitPro] Your kit has been given!";
-                        return $output;
-                    }
+                case "/donator" :
+                    $targetUsername = $args[0];
+                    array_push($this -> donators, $targetUsername);
+                    $output = "[KitPro] $targetUsername added as a donator!";
+                    $this -> api -> plugin -> writeYAML($this -> path . "Donators.yml", $this -> donators);
+                    return $output;
                     break;
             }
         }
 
     }
 
-   public function eventHandler($event, $data){
-        $username = $data->player->username;
+    public function eventHandler($event, $data)
+    {
+        $username = $data -> player -> username;
         $getKit = array_search($username, $this -> player);
-        unset($this->player[$getKit]);
-        $output = "[KitPro] You have died and may choose a new kit!";
-        return $output;
+        unset($this -> player[$getKit]);
     }
 
     public function __destruct()
