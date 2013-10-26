@@ -4,7 +4,7 @@
  * __PocketMine Plugin__
  * name=TrollPro
  * description=Troll all your friends
- * version=1.1
+ * version=2.1
  * author=Glitchmaster_PE
  * class=Troll
  * apiversion=10
