@@ -16,14 +16,14 @@ class Ranks implements Plugin
 
     public function __construct(ServerAPI $api, $server = false)
     {
-        $api = $this -> api;
+        $this -> api = $api;
     }
 
     public function init()
     {
-        $this -> api -> plugin -> register("ranks", "Info on the RanksPro plugin", array(
+        $this -> api -> console -> register("ranks", "Info on the RanksPro plugin", array(
             $this,
-            'Ranks'
+            "Ranks"
         ));
         $this -> path = $this -> api -> plugin -> configPath($this);
         $this -> ranks = new Config($this -> path . "Ranks.yml", CONFIG_YAML, array(
