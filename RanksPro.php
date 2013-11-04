@@ -74,22 +74,30 @@ class Ranks implements Plugin
                     if ($rank = $rank1)
                     {
                         array_push($this -> ranks["Rank 1"]["Users"], $target);
-                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks["Rank 1"]["Users"]);
+                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks);
+                        $output = "Added $target as $rank1";
+                        return $output;
                     }
                     elseif ($rank = $rank2)
                     {
                         array_push($this -> ranks["Rank 2"]["Users"], $target);
-                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks["Rank 2"]["Users"]);
+                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks);
+                        $output = "Added $target as $rank2";
+                        return $output;
                     }
                     elseif ($rank = $rank3)
                     {
                         array_push($this -> ranks["Rank 3"]["Users"], $target);
-                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks["Rank 3"]["Users"]);
+                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks);
+                        $output = "Added $target as $rank3";
+                        return $output;
                     }
                     elseif ($rank = $rank4)
                     {
                         array_push($this -> ranks["Rank 4"]["Users"], $target);
-                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks["Rank 4"]["Users"]);
+                        $this -> api -> plugin -> writeYAML($this -> path . "Ranks.yml", $this -> ranks);
+                        $output = "Added $target as $rank4";
+                        return $output;
                     }
                     else
                     {
@@ -111,3 +119,4 @@ class Ranks implements Plugin
     }
 
 }
+?>
