@@ -4,7 +4,7 @@
  __PocketMine Plugin__
  name=KitPro
  description=Gives a kit when a command is done
- version=3.2
+ version=4.0
  author=Glitchmaster_PE
  class=KitPro
  apiversion=10
