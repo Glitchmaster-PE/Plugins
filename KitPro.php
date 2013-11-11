@@ -109,8 +109,7 @@ class KitPro implements Plugin
         $username = $issuer -> username;
         if (in_array($username, $this -> player))
         {
-            $output = "You already have a kit!";
-            return $output;
+            console("You already have a kit!");
         }
         foreach ($this->kit as $kitName => $kit)
         {
@@ -119,8 +118,7 @@ class KitPro implements Plugin
                 case "kit" :
                     if (!$issuer instanceof Player)
                     {
-                        $output = "Please run this command in-game!";
-                        return $output;
+                        console("Please run this command in-game!");
                     }
                     switch(strtolower($args[0]))
                     {
@@ -135,7 +133,6 @@ class KitPro implements Plugin
                                 $output = "[KitPro] Your kit has been given!";
                                 array_push($this -> player, $username);
                             }
-                            return $output;
                             break;
                         default :
                             $normalKits = 'Normal Kits: ';
@@ -182,10 +179,10 @@ class KitPro implements Plugin
                     array_push($this -> donators, $targetUsername);
                     $output = "[KitPro] $targetUsername added as a donator!";
                     $this -> api -> plugin -> writeYAML($this -> path . "Donators.yml", $this -> donators);
-                    return $output;
                     break;
             }
         }
+        return $output;
     }
 
     public function giveKit($kit, $player)
