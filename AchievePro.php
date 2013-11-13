@@ -3,7 +3,7 @@
 /*
  * __PocketMine Plugin__
  * name=AchievePro
- * version=1.0
+ * version=2.0
  * description=Gives achievements to users!
  * author=Glitchmaster_PE
  * class=Achieve
@@ -17,203 +17,126 @@ class Achieve implements Plugin
     public function __construct(ServerAPI $api, $server = false)
     {
         $this -> api = $api;
-        $this -> crafting = array();
-        $this -> wood = array();
-        $this -> stone = array();
-        $this -> iron = array();
-        $this -> gold = array();
-        $this -> diamond = array();
-        $this -> lapis = array();
-        $this -> coal = array();
-        $this -> oven = array();
-        $this -> chest = array();
     }
 
     public function init()
     {
-        $this -> api -> addHandler("player.block.place", array(
-            $this,
-            "placeHandler"
-        ));
         $this -> api -> addHandler("player.block.break", array(
             $this,
-            "breakHandler"
+            "Handler"
         ));
         $this -> api -> addHandler("player.block.touch", array(
             $this,
-            "touchHandler"
+            "Handler"
+        ));
+        $this -> api -> addHandler("player.block.place", array(
+            $this,
+            "Handler"
+        ));
+        $this -> path = $this -> api -> plugin -> configPath($this);
+        $this -> handlers = new Config($this -> path, CONFIG_YAML, array(
+            "Broadcast" => "true",
+            "Achievements" => array(
+                "Crafting" => array(
+                    "Type" => "touch",
+                    "Item" => "58",
+                    "sendToMessage" => "Benchmaking!",
+                    "BroadcastMessage" => "is Benchmaking!"
+                ),
+                "Hot Topic!" => array(
+                    "Type" => "touch",
+                    "Item" => "61",
+                    "sendToMessage" => "Hot Topic!",
+                    "BroadcastMessage" => "is a Hot Topic"
+                ),
+                "Taking Inventory" => array(
+                    "Type" => "touch",
+                    "Item" => "54",
+                    "sendToMessage" => "Taking Inventory!",
+                    "BroadcastMessage" => "is Taking Inventory"
+                ),
+                "Getting Wood!" => array(
+                    "Type" => "break",
+                    "Item" => "17",
+                    "sendToMessage" => "Getting Wood!",
+                    "BroadcastMessage" => "is Getting Wood!"
+                ),
+                "Mining Stone" => array(
+                    "Type" => "break",
+                    "Item" => "1",
+                    "sendToMessage" => "Mining Stone!",
+                    "BroadcastMessage" => "is Mining Stone!"
+                ),
+                "Mining Iron" => array(
+                    "Type" => "break",
+                    "Item" => "15",
+                    "sendToMessage" => "Mining Iron!",
+                    "BroadcastMessage" => "is Mining Iron!"
+                ),
+                "Mining Gold" => array(
+                    "Type" => "break",
+                    "Item" => "14",
+                    "sendToMessage" => "Mining Gold!",
+                    "BroadcastMessage" => "is Mining Gold!"
+                ),
+                "Mining Diamond" => array(
+                    "Type" => "break",
+                    "Item" => "56",
+                    "sendToMessage" => "Mining Diamond!",
+                    "BroadcastMessage" => "is Mining Diamond!"
+                ),
+                "Mining Lapis Lazuli" => array(
+                    "Type" => "break",
+                    "Item" => "21",
+                    "sendToMessage" => "Mining Lapis Lazuli!",
+                    "BroadcastMessage" => "is Mining Lapis Lazuli!"
+                ),
+                "Mining Coal!" => array(
+                    "Type" => "break",
+                    "Item" => "21",
+                    "sendToMessage" => "Mining Coal!",
+                    "BroadcastMessage" => "is Mining Coal!"
+                )
+            )
         ));
     }
 
-    public function touchHandler($data)
+    public function Handler($event, $data)
     {
-        $target = $data["target"];
-        $username = $data["username"];
-        if ($target -> getID() === 58)
+        foreach ($this->handlers["Achievements"] as $ding => $dong)
         {
-            $getCraft = in_array($username, $this -> crafting);
-            if ($getCraft === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Benchmaking!");
-                $this -> api -> chat -> broadcast("$username is Benchmaking!");
-                array_push($this -> crating, $username);
-            }
-            else
-            {
-                return;
-            }
 
+            switch($event)
+            {
+                case "player.block." . $dong["Type"] :
+                    $this -> $dong = array();
+                    $target = $data["target"];
+                    $issuer = $data["player"];
+                    $username = $data["player"] -> username;
+                    if ($target -> getID() === $dong["Item"])
+                    {
+                        $getDong = in_array($username, $this -> $dong);
+                        if ($getDong === false)
+                        {
+                            $issuer -> sendChat("[Achievement Get] " . $ding["sendToMessage"]);
+                            $this -> api -> chat -> broadcast($username . " " . $ding["BroadcastMessage"]);
+                            array_push($this -> $dong, $username);
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+                    }
+                    break;
+            }
         }
-        elseif ($target -> getID() === 61)
-        {
-            $getOven = in_array($username, $this -> oven);
-            if ($getOven === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Hot Topic!");
-                $this -> api -> chat -> broadcast("$username is a Hot Topic!");
-                array_push($this -> oven, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        elseif ($target -> getID() === 54)
-        {
-            $getChest = in_array($username, $this -> chest);
-            if ($getChest === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Taking Inventory!");
-                $this -> api -> chat -> broadcast("$username is Taking Inventory!");
-                array_push($this -> chest, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-
     }
 
-    public function breakHandler($data)
+    public function __destruct()
     {
-        $target = $data["target"];
-        $username = $data["username"];
-        if ($target -> getID() === 17)
-        {
-            $getWood = in_array($username, $this -> wood);
-            if ($getWood === false)
-            {
-                $this -> api -> chat -> sendTo(false, "[Achievement Get] Getting Wood!", $username);
-                $this -> api -> chat -> broadcast("$username is Getting Wood!");
-                array_push($this -> wood, $username);
-            }
-            else
-            {
-                return;
-            }
 
-        }
-        elseif ($target -> getID() === 1)
-        {
-            $getStone = in_array($username, $this -> stone);
-            if ($getStone === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Mining Stone!");
-                $this -> api -> chat -> broadcast("$username is Mining Stone!");
-                array_push($this -> stone, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        elseif ($target -> getID() === 15)
-        {
-            $getIron = in_array($username, $this -> iron);
-            if ($getIron === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Mining Iron!");
-                $this -> api -> chat -> broadcast("$username is Mining Iron!");
-                array_push($this -> iron, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        elseif ($target -> getID() === 14)
-        {
-            $getGold = in_array($username, $this -> gold);
-            if ($getGold === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Mining Gold!");
-                $this -> api -> chat -> broadcast("$username is Mining Gold!");
-                array_push($this -> gold, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        elseif ($target -> getID() === 56)
-        {
-            $getDiamond = in_array($username, $this -> diamond);
-            if ($getDiamond === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Mining Diamond!");
-                $this -> api -> chat -> broadcast("$username is Mining Diamond!");
-                array_push($this -> diamond, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        elseif ($target -> getID() === 21)
-        {
-            $getLapis = in_array($username, $this -> lapis);
-            if ($getLapis === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Mining Lapis Lazuli!");
-                $this -> api -> chat -> broadcast("$username is Mining Lapis Lazuli!");
-                array_push($this -> lapis, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        elseif ($target -> getID() === 16)
-        {
-            $getCoal = in_array($username, $this -> coal);
-            if ($getCoal === false)
-            {
-                $this -> api -> chat -> sendTo($username, "[Achievement Get] Mining Coal!");
-                $this -> api -> chat -> broadcast("$username is Mining Coal!");
-                array_push($this -> coal, $username);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        else
-        {
-            return;
-        }
     }
 
-    public function __destruct(){
-        
-    }
 }
 ?>
