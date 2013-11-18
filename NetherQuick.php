@@ -41,11 +41,11 @@ class NetherQuick implements Plugin{
 
 	public function touchHandler($data){
 		if($data["target"]->getID() === $this->config->get("ItemID")){
+			$player = $data["player"];
 			if($this->config->get("RequireCorrectPattern") == true){
 				$x = $data["target"]->x;
 				$y = $data["target"]->y;
 				$z = $data["target"]->z;
-				$player = $data["player"];
 				$level = $player->level;
 				$blocks = array();
 				foreach($this->netherReactorPattern as $val){
