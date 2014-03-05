@@ -19,8 +19,10 @@ class Cake implements Plugin{
     
     public function init(){
         $this->api->addHandler("player.block.touch", array($this, "eventHandler"));
+        $this->api->console->register("icake on", "Makes cake infanit!", array($this, "handleCommand"));
+        $this->api->console->register("icake off", "Disables infanit cake!", array($this, "handleCommand"));
     }
-    
+    /*
     public function eventHandler($data){
         $block = $data["target"]->getID();
         $meta = $data["target"]->getMetadata();
@@ -40,6 +42,18 @@ class Cake implements Plugin{
             return;
         }
     }
+    */
+    
+        public function handleCommand($data, $event)
+    {
+    switch($event)
+    {
+        case "icake on":
+           $output .="[icake] Pleas toch the cake you want to be infanit!\n";
+        break;
+        case "icake off":
+        $output .="[icake] Pleas toch the cake you want to disable infanit on!\n";
+        break;
     public function __destruct(){
         
     }
